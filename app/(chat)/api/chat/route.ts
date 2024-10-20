@@ -1,4 +1,5 @@
 import { convertToCoreMessages, Message, streamText } from "ai";
+import Twilio from "twilio";
 import { z } from "zod";
 
 import { geminiProModel } from "@/ai";
@@ -17,6 +18,23 @@ import {
   saveChat,
 } from "@/db/queries";
 import { generateUUID } from "@/lib/utils";
+
+async function createPhoneCall(toE164: string) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const fromE164 = process.env.TWILIO_PHONE_NUMBER || "";
+  const agentUrl = process.env.AGENT_URL;
+
+  const twilio = Twilio(accountSid, authToken);
+
+  const phoneCall = await twilio.calls.create({
+    from: fromE164,
+    to: toE164,
+    url: agentUrl,
+  });
+
+  return { from: phoneCall.from, to: phoneCall.to };
+}
 
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
@@ -211,6 +229,20 @@ export async function POST(request: Request) {
         }),
         execute: async (boardingPass) => {
           return boardingPass;
+        },
+      },
+      makePhoneCall: {
+        description: "Make a phone call to a given phone number",
+        parameters: z.object({
+          phoneNumber: z
+            .string()
+            .describe(
+              "the phone number to call in E.164 format, e.g. +10123456789 in US",
+            ),
+        }),
+        execute: async ({ phoneNumber }) => {
+          const phoneCall = await createPhoneCall(phoneNumber);
+          return phoneCall;
         },
       },
     },

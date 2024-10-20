@@ -20,8 +20,10 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
 const suggestedActions = [
-  "Help me book a flight from San Francisco to London",
+  "What is the weather in San Francisco?",
+  "Help me book a flight from San Francisco to London.",
   "What is the status of flight BA142 flying tmrw?",
+  "Make a phone call.",
 ];
 
 export function MultimodalInput({
