@@ -15,6 +15,7 @@ import { FlightStatus } from "../flights/flight-status";
 import { ListFlights } from "../flights/list-flights";
 import { SelectSeats } from "../flights/select-seats";
 import { VerifyPayment } from "../flights/verify-payment";
+import { PhoneCallConfirmation } from "../phone-calls/confirmation";
 
 export const Message = ({
   chatId,
@@ -74,6 +75,8 @@ export const Message = ({
                       <DisplayBoardingPass boardingPass={result} />
                     ) : toolName === "verifyPayment" ? (
                       <VerifyPayment result={result} />
+                    ) : toolName === "makePhoneCall" ? (
+                      <PhoneCallConfirmation phoneCall={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}
@@ -96,6 +99,8 @@ export const Message = ({
                       <AuthorizePayment />
                     ) : toolName === "displayBoardingPass" ? (
                       <DisplayBoardingPass />
+                    ) : toolName === "makePhoneCall" ? (
+                      <PhoneCallConfirmation />
                     ) : null}
                   </div>
                 );
