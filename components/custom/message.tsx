@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import { Attachment, ToolInvocation } from "ai";
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { Attachment, ToolInvocation } from 'ai'
+import { motion } from 'framer-motion'
+import { ReactNode } from 'react'
 
-import { BotIcon, UserIcon } from "./icons";
-import { Markdown } from "./markdown";
-import { PreviewAttachment } from "./preview-attachment";
-import { Weather } from "./weather";
-import { AuthorizePayment } from "../flights/authorize-payment";
-import { DisplayBoardingPass } from "../flights/boarding-pass";
-import { CreateReservation } from "../flights/create-reservation";
-import { FlightStatus } from "../flights/flight-status";
-import { ListFlights } from "../flights/list-flights";
-import { SelectSeats } from "../flights/select-seats";
-import { VerifyPayment } from "../flights/verify-payment";
-import { PhoneCallConfirmation } from "../phone-calls/confirmation";
+import { BotIcon, UserIcon } from './icons'
+import { Markdown } from './markdown'
+import { PreviewAttachment } from './preview-attachment'
+import { Weather } from './weather'
+import { AuthorizePayment } from '../flights/authorize-payment'
+import { DisplayBoardingPass } from '../flights/boarding-pass'
+import { CreateReservation } from '../flights/create-reservation'
+import { FlightStatus } from '../flights/flight-status'
+import { ListFlights } from '../flights/list-flights'
+import { SelectSeats } from '../flights/select-seats'
+import { VerifyPayment } from '../flights/verify-payment'
+import { PhoneCallConfirmation } from '../phone-calls/confirmation'
 
 export const Message = ({
   chatId,
@@ -24,11 +24,11 @@ export const Message = ({
   toolInvocations,
   attachments,
 }: {
-  chatId: string;
-  role: string;
-  content: string | ReactNode;
-  toolInvocations: Array<ToolInvocation> | undefined;
-  attachments?: Array<Attachment>;
+  chatId: string
+  role: string
+  content: string | ReactNode
+  toolInvocations: Array<ToolInvocation> | undefined
+  attachments?: Array<Attachment>
 }) => {
   return (
     <motion.div
@@ -36,81 +36,81 @@ export const Message = ({
       initial={{ y: 5, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
     >
-      <div className="size-[24px] border rounded-sm p-1 flex flex-col justify-center items-center shrink-0 text-zinc-500">
-        {role === "assistant" ? <BotIcon /> : <UserIcon />}
+      <div className='size-[24px] border rounded-sm p-1 flex flex-col justify-center items-center shrink-0 text-zinc-500'>
+        {role === 'assistant' ? <BotIcon /> : <UserIcon />}
       </div>
 
-      <div className="flex flex-col gap-2 w-full">
-        {content && typeof content === "string" && (
-          <div className="text-zinc-800 dark:text-zinc-300 flex flex-col gap-4">
+      <div className='flex flex-col gap-2 w-full'>
+        {content && typeof content === 'string' && (
+          <div className='text-zinc-800 dark:text-zinc-300 flex flex-col gap-4'>
             <Markdown>{content}</Markdown>
           </div>
         )}
 
         {toolInvocations && (
-          <div className="flex flex-col gap-4">
+          <div className='flex flex-col gap-4'>
             {toolInvocations.map((toolInvocation) => {
-              const { toolName, toolCallId, state } = toolInvocation;
+              const { toolName, toolCallId, state } = toolInvocation
 
-              if (state === "result") {
-                const { result } = toolInvocation;
+              if (state === 'result') {
+                const { result } = toolInvocation
 
                 return (
                   <div key={toolCallId}>
-                    {toolName === "getWeather" ? (
+                    {toolName === 'getWeather' ? (
                       <Weather weatherAtLocation={result} />
-                    ) : toolName === "displayFlightStatus" ? (
+                    ) : toolName === 'displayFlightStatus' ? (
                       <FlightStatus flightStatus={result} />
-                    ) : toolName === "searchFlights" ? (
+                    ) : toolName === 'searchFlights' ? (
                       <ListFlights chatId={chatId} results={result} />
-                    ) : toolName === "selectSeats" ? (
+                    ) : toolName === 'selectSeats' ? (
                       <SelectSeats chatId={chatId} availability={result} />
-                    ) : toolName === "createReservation" ? (
-                      Object.keys(result).includes("error") ? null : (
+                    ) : toolName === 'createReservation' ? (
+                      Object.keys(result).includes('error') ? null : (
                         <CreateReservation reservation={result} />
                       )
-                    ) : toolName === "authorizePayment" ? (
+                    ) : toolName === 'authorizePayment' ? (
                       <AuthorizePayment intent={result} />
-                    ) : toolName === "displayBoardingPass" ? (
+                    ) : toolName === 'displayBoardingPass' ? (
                       <DisplayBoardingPass boardingPass={result} />
-                    ) : toolName === "verifyPayment" ? (
+                    ) : toolName === 'verifyPayment' ? (
                       <VerifyPayment result={result} />
-                    ) : toolName === "makePhoneCall" ? (
+                    ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation phoneCall={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}
                   </div>
-                );
+                )
               } else {
                 return (
-                  <div key={toolCallId} className="skeleton">
-                    {toolName === "getWeather" ? (
+                  <div key={toolCallId} className='skeleton'>
+                    {toolName === 'getWeather' ? (
                       <Weather />
-                    ) : toolName === "displayFlightStatus" ? (
+                    ) : toolName === 'displayFlightStatus' ? (
                       <FlightStatus />
-                    ) : toolName === "searchFlights" ? (
+                    ) : toolName === 'searchFlights' ? (
                       <ListFlights chatId={chatId} />
-                    ) : toolName === "selectSeats" ? (
+                    ) : toolName === 'selectSeats' ? (
                       <SelectSeats chatId={chatId} />
-                    ) : toolName === "createReservation" ? (
+                    ) : toolName === 'createReservation' ? (
                       <CreateReservation />
-                    ) : toolName === "authorizePayment" ? (
+                    ) : toolName === 'authorizePayment' ? (
                       <AuthorizePayment />
-                    ) : toolName === "displayBoardingPass" ? (
+                    ) : toolName === 'displayBoardingPass' ? (
                       <DisplayBoardingPass />
-                    ) : toolName === "makePhoneCall" ? (
+                    ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation />
                     ) : null}
                   </div>
-                );
+                )
               }
             })}
           </div>
         )}
 
         {attachments && (
-          <div className="flex flex-row gap-2">
+          <div className='flex flex-row gap-2'>
             {attachments.map((attachment) => (
               <PreviewAttachment key={attachment.url} attachment={attachment} />
             ))}
@@ -118,5 +118,5 @@ export const Message = ({
         )}
       </div>
     </motion.div>
-  );
-};
+  )
+}
