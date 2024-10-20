@@ -20,16 +20,8 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
 const suggestedActions = [
-  {
-    title: "Help me book a flight",
-    label: "from San Francisco to London",
-    action: "Help me book a flight from San Francisco to London",
-  },
-  {
-    title: "What is the status",
-    label: "of flight BA142 flying tmrw?",
-    action: "What is the status of flight BA142 flying tmrw?",
-  },
+  "Help me book a flight from San Francisco to London",
+  "What is the status of flight BA142 flying tmrw?",
 ];
 
 export function MultimodalInput({
@@ -73,7 +65,9 @@ export function MultimodalInput({
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 0}px`;
+      textareaRef.current.style.height = `${
+        textareaRef.current.scrollHeight + 0
+      }px`;
     }
   };
 
@@ -170,15 +164,12 @@ export function MultimodalInput({
                   onClick={async () => {
                     append({
                       role: "user",
-                      content: suggestedAction.action,
+                      content: suggestedAction,
                     });
                   }}
                   className="border-none bg-muted/50 w-full text-left border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg p-3 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex flex-col"
                 >
-                  <span className="font-medium">{suggestedAction.title}</span>
-                  <span className="text-zinc-500 dark:text-zinc-400">
-                    {suggestedAction.label}
-                  </span>
+                  <span>{suggestedAction}</span>
                 </button>
               </motion.div>
             ))}
