@@ -58,27 +58,43 @@ export function AgentEditor({
     },
   })
 
+  const suggestions = ['Make a phone call']
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)} className='space-y-2'>
-        <FormField
-          control={form.control}
-          name='instructions'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Agent {agent.name} system instructions</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder='type in the system instructions for your agent, such as its role, conversation style, objective, etc'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type='submit'>Save</Button>
-      </form>
-    </Form>
+    <div className='grid gap-4'>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onFormSubmit)} className='space-y-2'>
+          <FormField
+            control={form.control}
+            name='instructions'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Agent {agent.name} system instructions</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder='type in the system instructions for your agent, such as its role, conversation style, objective, etc'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type='submit'>Save</Button>
+        </form>
+      </Form>
+      <div className='flex flex-col sm:flex-row items-start gap-2'>
+        {suggestions.map((suggestion) => (
+          <Button
+            key={suggestion}
+            onClick={() => {
+              append({ role: 'user', content: suggestion })
+            }}
+          >
+            ✨ {suggestion}
+          </Button>
+        ))}
+      </div>
+    </div>
   )
 }
