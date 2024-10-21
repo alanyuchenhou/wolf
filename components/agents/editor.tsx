@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 
+import { Suggestions } from '../custom/suggestions'
+
 export function AgentEditor({
   chatId,
   agent,
@@ -58,8 +60,6 @@ export function AgentEditor({
     },
   })
 
-  const suggestions = ['Make a phone call']
-
   return (
     <div className='grid gap-4'>
       <Form {...form}>
@@ -83,18 +83,7 @@ export function AgentEditor({
           <Button type='submit'>Save</Button>
         </form>
       </Form>
-      <div className='flex flex-col sm:flex-row items-start gap-2'>
-        {suggestions.map((suggestion) => (
-          <Button
-            key={suggestion}
-            onClick={() => {
-              append({ role: 'user', content: suggestion })
-            }}
-          >
-            ✨ {suggestion}
-          </Button>
-        ))}
-      </div>
+      <Suggestions suggestions={['Make a phone call']} append={append} />
     </div>
   )
 }
