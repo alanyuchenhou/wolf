@@ -79,7 +79,7 @@ export const Message = ({
                     ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation phoneCall={result} />
                     ) : toolName === 'makeAgent' ? (
-                      <AgentEditor agent={result} />
+                      <AgentEditor chatId={chatId} agent={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}
