@@ -39,21 +39,6 @@ async function createPhoneCall(toE164: string) {
   return { from: phoneCall.from, to: phoneCall.to }
 }
 
-export async function createAgent(contents: string) {
-  const putObjectURL = process.env.PUT_OBJECT_URL
-  if (!putObjectURL) {
-    throw new Error('Missing required environment variables')
-  }
-
-  const response = await fetch(putObjectURL, {
-    method: 'PUT',
-    body: JSON.stringify({ contents: contents }),
-    headers: { 'Content-type': 'application/json; charset=UTF-8' },
-  })
-  const agent = await response.json()
-  return agent
-}
-
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
     await request.json()
@@ -71,7 +56,6 @@ export async function POST(request: Request) {
   const result = await streamText({
     model: geminiProModel,
     system: `\n
-        - you help users book flights!
         - keep your responses limited to a sentence.
         - DO NOT output lists.
         - after every tool call, pretend you're showing the result to the user and keep your response limited to a phrase.
@@ -261,6 +245,16 @@ export async function POST(request: Request) {
         execute: async ({ phoneNumber }) => {
           const phoneCall = await createPhoneCall(phoneNumber)
           return phoneCall
+        },
+      },
+      makeAgent: {
+        description:
+          'Make a voice agnet (ask the user to save system instructions and let you know when done)',
+        parameters: z.object({
+          name: z.string().describe('the name of the agent, e.g. Javis'),
+        }),
+        execute: async (agent) => {
+          return agent
         },
       },
     },
