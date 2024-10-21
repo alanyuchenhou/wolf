@@ -22,8 +22,11 @@ import { generateUUID } from '@/lib/utils'
 async function createPhoneCall(toE164: string) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
-  const fromE164 = process.env.TWILIO_PHONE_NUMBER || ''
+  const fromE164 = process.env.TWILIO_PHONE_NUMBER
   const agentUrl = process.env.AGENT_URL
+  if (!accountSid || !authToken || !fromE164 || !agentUrl) {
+    throw new Error('Missing required environment variables')
+  }
 
   const twilio = Twilio(accountSid, authToken)
 
@@ -53,7 +56,6 @@ export async function POST(request: Request) {
   const result = await streamText({
     model: geminiProModel,
     system: `\n
-        - you help users book flights!
         - keep your responses limited to a sentence.
         - DO NOT output lists.
         - after every tool call, pretend you're showing the result to the user and keep your response limited to a phrase.
@@ -243,6 +245,16 @@ export async function POST(request: Request) {
         execute: async ({ phoneNumber }) => {
           const phoneCall = await createPhoneCall(phoneNumber)
           return phoneCall
+        },
+      },
+      makeAgent: {
+        description:
+          'Make a voice agnet (ask the user to save the agent and let you know when done)',
+        parameters: z.object({
+          name: z.string().describe('the name of the agent, e.g. Javis'),
+        }),
+        execute: async (agent) => {
+          return agent
         },
       },
     },

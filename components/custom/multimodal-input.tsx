@@ -24,6 +24,7 @@ const suggestedActions = [
   'Help me book a flight from San Francisco to London.',
   'What is the status of flight BA142 flying tmrw?',
   'Make a phone call.',
+  'Make a voice agent',
 ]
 
 export function MultimodalInput({

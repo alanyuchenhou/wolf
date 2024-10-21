@@ -8,6 +8,7 @@ import { BotIcon, UserIcon } from './icons'
 import { Markdown } from './markdown'
 import { PreviewAttachment } from './preview-attachment'
 import { Weather } from './weather'
+import { AgentEditor } from '../agents/editor'
 import { AuthorizePayment } from '../flights/authorize-payment'
 import { DisplayBoardingPass } from '../flights/boarding-pass'
 import { CreateReservation } from '../flights/create-reservation'
@@ -77,6 +78,8 @@ export const Message = ({
                       <VerifyPayment result={result} />
                     ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation phoneCall={result} />
+                    ) : toolName === 'makeAgent' ? (
+                      <AgentEditor chatId={chatId} agent={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}
@@ -99,8 +102,6 @@ export const Message = ({
                       <AuthorizePayment />
                     ) : toolName === 'displayBoardingPass' ? (
                       <DisplayBoardingPass />
-                    ) : toolName === 'makePhoneCall' ? (
-                      <PhoneCallConfirmation />
                     ) : null}
                   </div>
                 )
