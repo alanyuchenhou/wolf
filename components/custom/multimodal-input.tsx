@@ -2,6 +2,7 @@
 
 import { Attachment, ChatRequestOptions, CreateMessage, Message } from 'ai'
 import { motion } from 'framer-motion'
+import _ from 'lodash'
 import React, {
   useRef,
   useEffect,
@@ -18,14 +19,6 @@ import { PreviewAttachment } from './preview-attachment'
 import useWindowSize from './use-window-size'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
-
-const suggestedActions = [
-  'What is the weather in San Francisco?',
-  'Help me book a flight from San Francisco to London.',
-  'What is the status of flight BA142 flying tmrw?',
-  'Make a phone call.',
-  'Make a voice agent',
-]
 
 export function MultimodalInput({
   input,
@@ -56,6 +49,18 @@ export function MultimodalInput({
     chatRequestOptions?: ChatRequestOptions,
   ) => void
 }) {
+  const [suggestedActions, setSuggestedActions] = useState<string[]>([])
+  useEffect(() => {
+    const allActions = [
+      'Weather in San Francisco',
+      'Flights to San Francisco',
+      'BA142 flight status today',
+      'Make a phone call',
+      'Make a voice agent',
+    ]
+    setSuggestedActions(_.sampleSize(allActions, 4))
+  }, [])
+
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { width } = useWindowSize()
 
