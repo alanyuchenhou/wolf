@@ -17,6 +17,7 @@ import { ListFlights } from '../flights/list-flights'
 import { SelectSeats } from '../flights/select-seats'
 import { VerifyPayment } from '../flights/verify-payment'
 import { PhoneCallConfirmation } from '../phone-calls/confirmation'
+import { PhoneCallList } from '../phone-calls/list'
 
 export const Message = ({
   chatId,
@@ -76,6 +77,8 @@ export const Message = ({
                       <DisplayBoardingPass boardingPass={result} />
                     ) : toolName === 'verifyPayment' ? (
                       <VerifyPayment result={result} />
+                    ) : toolName === 'displayCallHistory' ? (
+                      <PhoneCallList result={result} />
                     ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation phoneCall={result} />
                     ) : toolName === 'makeAgent' ? (

@@ -19,24 +19,37 @@ import {
 } from '@/db/queries'
 import { generateUUID } from '@/lib/utils'
 
-async function createPhoneCall(toE164: string) {
+function twilioClient() {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
+  if (!accountSid || !authToken) {
+    throw new Error('Missing required environment variables')
+  }
+  return Twilio(accountSid, authToken)
+}
+
+async function createPhoneCall(toE164: string) {
   const fromE164 = process.env.TWILIO_PHONE_NUMBER
   const agentUrl = process.env.AGENT_URL
-  if (!accountSid || !authToken || !fromE164 || !agentUrl) {
+  if (!fromE164) {
     throw new Error('Missing required environment variables')
   }
 
-  const twilio = Twilio(accountSid, authToken)
+  const twilio = twilioClient()
 
   const phoneCall = await twilio.calls.create({
     from: fromE164,
     to: toE164,
     url: agentUrl,
   })
+  return phoneCall
+}
 
-  return { from: phoneCall.from, to: phoneCall.to }
+async function listPhoneCalls() {
+  const twilio = twilioClient()
+
+  const phoneCalls = await twilio.calls.list({ limit: 10 })
+  return { phoneCalls }
 }
 
 export async function POST(request: Request) {
@@ -253,8 +266,20 @@ export async function POST(request: Request) {
         parameters: z.object({
           name: z.string().describe('the name of the agent, e.g. Javis'),
         }),
-        execute: async (agent) => {
-          return agent
+        execute: async (name) => {
+          return name
+        },
+      },
+      displayCallHistory: {
+        description: 'Display the list of phone calls made by the given agents',
+        parameters: z.object({
+          names: z
+            .string()
+            .describe('the names of the agents (enter all for all agents)'),
+        }),
+        execute: async ({ names }) => {
+          const phoneCalls = await listPhoneCalls()
+          return phoneCalls
         },
       },
     },
