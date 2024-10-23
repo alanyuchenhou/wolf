@@ -51,19 +51,20 @@ export function MultimodalInput({
 }) {
   const [suggestedActions, setSuggestedActions] = useState<string[]>([])
   useEffect(() => {
-    const allActions = [
+    const flightActions: string[] = [
       'Weather in San Francisco',
       'Flights to San Francisco',
       'BA142 flight status today',
+    ]
+    const phoneCallActions: string[] = [
       'Make a phone call',
       'Make a voice agent',
       'Display call history',
     ]
-    setSuggestedActions(
-      process.env.VERCEL_ENV === 'production'
-        ? _.sampleSize(allActions, 4)
-        : allActions,
-    )
+    setSuggestedActions([
+      _.sample(flightActions) || '',
+      _.sample(phoneCallActions) || '',
+    ])
   }, [])
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
