@@ -57,8 +57,13 @@ export function MultimodalInput({
       'BA142 flight status today',
       'Make a phone call',
       'Make a voice agent',
+      'Display call history',
     ]
-    setSuggestedActions(_.sampleSize(allActions, 4))
+    setSuggestedActions(
+      process.env.VERCEL_ENV === 'production'
+        ? _.sampleSize(allActions, 4)
+        : allActions,
+    )
   }, [])
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -177,7 +182,7 @@ export function MultimodalInput({
                   }}
                   className='border-none bg-muted/50 w-full text-left border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg p-3 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex flex-col'
                 >
-                  <span>{suggestedAction}</span>
+                  <span>✨ {suggestedAction}</span>
                 </button>
               </motion.div>
             ))}
