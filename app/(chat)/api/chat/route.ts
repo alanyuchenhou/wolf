@@ -28,27 +28,36 @@ function twilioClient() {
   return Twilio(accountSid, authToken)
 }
 
-async function createPhoneCall(toE164: string) {
-  const fromE164 = process.env.TWILIO_PHONE_NUMBER
-  const agentUrl = process.env.AGENT_URL
-  if (!fromE164) {
+async function createPhoneCall(to: string) {
+  const from = process.env.TWILIO_PHONE_NUMBER
+  const url = process.env.AGENT_URL
+  if (!from) {
     throw new Error('Missing required environment variables')
   }
 
   const twilio = twilioClient()
 
-  const phoneCall = await twilio.calls.create({
-    from: fromE164,
-    to: toE164,
-    url: agentUrl,
-  })
+  const phoneCall = await twilio.calls.create({ from, to, url })
   return phoneCall
 }
 
-async function listPhoneCalls() {
+async function listPhoneCalls(limit: number) {
   const twilio = twilioClient()
-
-  const phoneCalls = await twilio.calls.list({ limit: 10 })
+  const calls = await twilio.calls.list({ limit })
+  const phoneCalls = calls.map((call) => {
+    const duration = Number(call.duration)
+    return {
+      sid: call.sid,
+      time: call.startTime.toISOString().split('.')[0],
+      duration: new Date(duration * 1000)
+        .toISOString()
+        .substring(duration > 3600 ? 11 : 14, 19),
+      cost: `$${-Number(call.price)}`,
+      from: call.from,
+      to: call.to,
+      status: call.status,
+    }
+  })
   return { phoneCalls }
 }
 
@@ -271,14 +280,17 @@ export async function POST(request: Request) {
         },
       },
       displayCallHistory: {
-        description: 'Display the list of phone calls made by the given agents',
+        description:
+          'Display the list of most recent phone calls up to the given amount limit',
         parameters: z.object({
-          names: z
-            .string()
-            .describe('the names of the agents (enter all for all agents)'),
+          limit: z
+            .number()
+            .describe(
+              'the maximum limit of the number of phone calls to display',
+            ),
         }),
-        execute: async ({ names }) => {
-          const phoneCalls = await listPhoneCalls()
+        execute: async ({ limit }) => {
+          const phoneCalls = await listPhoneCalls(limit)
           return phoneCalls
         },
       },

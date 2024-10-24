@@ -1,19 +1,26 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { ColumnDef } from '@tanstack/react-table'
 
-interface PhoneCall {
-  startTime: string
+import { DataTable } from './data-table'
+
+type PhoneCall = {
+  sid: string
+  time: string
   duration: string
-  price: string
+  cost: string
+  from: string
+  to: string
   status: string
 }
+
+export const columns: ColumnDef<PhoneCall>[] = [
+  { accessorKey: 'sid', header: 'SID' },
+  { accessorKey: 'time', header: 'Time' },
+  { accessorKey: 'duration', header: 'Duration' },
+  { accessorKey: 'cost', header: 'Cost' },
+  { accessorKey: 'from', header: 'From' },
+  { accessorKey: 'to', header: 'To' },
+  { accessorKey: 'status', header: 'Status' },
+]
 
 export function PhoneCallList({
   result,
@@ -21,26 +28,8 @@ export function PhoneCallList({
   result: { phoneCalls: PhoneCall[] }
 }) {
   return (
-    <Table>
-      <TableCaption>A list of your most recent phone calls.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className='w-[190px]'>Time</TableHead>
-          <TableHead>Duration</TableHead>
-          <TableHead>Cost</TableHead>
-          <TableHead>Status</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {result.phoneCalls.map((call, index) => (
-          <TableRow key={index}>
-            <TableCell>{call.startTime.split('.')[0]}</TableCell>
-            <TableCell>{call.duration}s</TableCell>
-            <TableCell>${-Number(call.price)}</TableCell>
-            <TableCell>{call.status}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className='container mx-auto py-10'>
+      <DataTable columns={columns} data={result.phoneCalls} />
+    </div>
   )
 }
