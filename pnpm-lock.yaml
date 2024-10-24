@@ -37,6 +37,9 @@ importers:
       '@radix-ui/react-visually-hidden':
         specifier: ^1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
+      '@tanstack/react-table':
+        specifier: ^8.20.5
+        version: 8.20.5(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
       '@vercel/analytics':
         specifier: ^1.3.1
         version: 1.3.1(next@15.0.0-canary.152(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
@@ -1955,6 +1958,23 @@ packages:
       {
         integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==,
       }
+
+  '@tanstack/react-table@8.20.5':
+    resolution:
+      {
+        integrity: sha512-WEHopKw3znbUZ61s9i0+i9g8drmDo6asTWbrQh8Us63DAk/M0FkmIqERew6P71HI75ksZ2Pxyuf4vvKh9rAkiA==,
+      }
+    engines: { node: '>=12' }
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
+  '@tanstack/table-core@8.20.5':
+    resolution:
+      {
+        integrity: sha512-P9dF7XbibHph2PFRz8gfBKEXEY/HJPOhym8CHmjF8y3q5mWpKx9xtZapXQUWCgkqvsK0R46Azuz+VaxD4Xl+Tg==,
+      }
+    engines: { node: '>=12' }
 
   '@types/cookie@0.6.0':
     resolution:
@@ -7274,6 +7294,14 @@ snapshots:
   '@swc/helpers@0.5.13':
     dependencies:
       tslib: 2.6.3
+
+  '@tanstack/react-table@8.20.5(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)':
+    dependencies:
+      '@tanstack/table-core': 8.20.5
+      react: 19.0.0-rc-7771d3a7-20240827
+      react-dom: 19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827)
+
+  '@tanstack/table-core@8.20.5': {}
 
   '@types/cookie@0.6.0': {}
 
