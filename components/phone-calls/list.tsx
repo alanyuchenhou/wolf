@@ -1,16 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table'
+import { useChat } from 'ai/react'
 
 import { DataTable } from './data-table'
-
-type PhoneCall = {
-  sid: string
-  time: string
-  duration: string
-  cost: string
-  from: string
-  to: string
-  status: string
-}
+import { PhoneCall } from './types'
 
 export const columns: ColumnDef<PhoneCall>[] = [
   { accessorKey: 'sid', header: 'SID' },
@@ -23,13 +15,20 @@ export const columns: ColumnDef<PhoneCall>[] = [
 ]
 
 export function PhoneCallList({
+  chatId,
   result,
 }: {
+  chatId: string
   result: { phoneCalls: PhoneCall[] }
 }) {
+  const { append } = useChat({
+    id: chatId,
+    body: { id: chatId },
+    maxSteps: 5,
+  })
   return (
     <div className='container mx-auto py-10'>
-      <DataTable columns={columns} data={result.phoneCalls} />
+      <DataTable append={append} columns={columns} data={result.phoneCalls} />
     </div>
   )
 }

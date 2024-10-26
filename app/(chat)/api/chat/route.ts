@@ -41,24 +41,36 @@ async function createPhoneCall(to: string) {
   return phoneCall
 }
 
+function formatPhoneCall(call: any) {
+  const duration = Number(call.duration)
+  return {
+    sid: call.sid,
+    time: call.startTime.toISOString().split('.')[0],
+    duration: new Date(duration * 1000)
+      .toISOString()
+      .substring(duration > 3600 ? 11 : 14, 19),
+    cost: `$${-Number(call.price)}`,
+    from: call.from,
+    to: call.to,
+    status: call.status,
+  }
+}
+
 async function listPhoneCalls(limit: number) {
   const twilio = twilioClient()
   const calls = await twilio.calls.list({ limit })
-  const phoneCalls = calls.map((call) => {
-    const duration = Number(call.duration)
-    return {
-      sid: call.sid,
-      time: call.startTime.toISOString().split('.')[0],
-      duration: new Date(duration * 1000)
-        .toISOString()
-        .substring(duration > 3600 ? 11 : 14, 19),
-      cost: `$${-Number(call.price)}`,
-      from: call.from,
-      to: call.to,
-      status: call.status,
-    }
-  })
+  const phoneCalls = calls.map(formatPhoneCall)
   return { phoneCalls }
+}
+
+async function getPhoneCallWithRecording(sid: string) {
+  const twilio = twilioClient()
+  const call = await twilio.calls(sid).fetch()
+  const phoneCall = formatPhoneCall(call)
+  const recordings = await twilio.recordings.list({ callSid: sid, limit: 1 })
+  const recordingUrl = `${recordings.at(0)?.mediaUrl}.wav`
+
+  return { phoneCall, recordingUrl }
 }
 
 export async function POST(request: Request) {
@@ -292,6 +304,16 @@ export async function POST(request: Request) {
         execute: async ({ limit }) => {
           const phoneCalls = await listPhoneCalls(limit)
           return phoneCalls
+        },
+      },
+      displayCallDetails: {
+        description: 'Display the details of a phone call with the given SID',
+        parameters: z.object({
+          sid: z.string().describe('the SID of the phone call'),
+        }),
+        execute: async ({ sid }) => {
+          const phoneCallWithRecording = await getPhoneCallWithRecording(sid)
+          return phoneCallWithRecording
         },
       },
     },
