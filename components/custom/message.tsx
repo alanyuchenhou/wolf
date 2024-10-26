@@ -17,6 +17,7 @@ import { ListFlights } from '../flights/list-flights'
 import { SelectSeats } from '../flights/select-seats'
 import { VerifyPayment } from '../flights/verify-payment'
 import { PhoneCallConfirmation } from '../phone-calls/confirmation'
+import { PhoneCallDetails } from '../phone-calls/details'
 import { PhoneCallList } from '../phone-calls/list'
 
 export const Message = ({
@@ -78,7 +79,9 @@ export const Message = ({
                     ) : toolName === 'verifyPayment' ? (
                       <VerifyPayment result={result} />
                     ) : toolName === 'displayCallHistory' ? (
-                      <PhoneCallList result={result} />
+                      <PhoneCallList chatId={chatId} result={result} />
+                    ) : toolName === 'displayCallDetails' ? (
+                      <PhoneCallDetails result={result} />
                     ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation phoneCall={result} />
                     ) : toolName === 'makeAgent' ? (
