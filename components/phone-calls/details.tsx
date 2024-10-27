@@ -26,11 +26,8 @@ export function PhoneCallDetails({
       const response = await fetch(
         `/api/transcriptions/?callSid=${result.phoneCall.sid}`,
       )
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      const data = await response.json()
-      setTranscription(data.transcription)
+      const transcription = await response.json()
+      setTranscription(transcription)
     }
     fetchTranscription()
   }, [result])
