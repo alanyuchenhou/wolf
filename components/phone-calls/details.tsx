@@ -18,7 +18,7 @@ interface Message {
 export function PhoneCallDetails({
   result,
 }: {
-  result: { phoneCall: PhoneCall; recordingUrl: string }
+  result: { phoneCall: PhoneCall; recordingUrls: string[] }
 }) {
   const [transcription, setTranscription] = useState<Message[]>([])
   useEffect(() => {
@@ -47,7 +47,9 @@ export function PhoneCallDetails({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <audio controls src={result.recordingUrl} />
+        {result.recordingUrls.map((recordingUrl) => (
+          <audio controls key={recordingUrl} src={recordingUrl} />
+        ))}
         <Separator className='my-4' />
         {transcription.map((message: Message, i: number) => (
           <div className={`flex gap-2`} key={i}>

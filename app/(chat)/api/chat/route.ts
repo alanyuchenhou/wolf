@@ -67,10 +67,10 @@ async function getPhoneCallWithRecording(sid: string) {
   const twilio = twilioClient()
   const call = await twilio.calls(sid).fetch()
   const phoneCall = formatPhoneCall(call)
-  const recordings = await twilio.recordings.list({ callSid: sid, limit: 1 })
-  const recordingUrl = `${recordings.at(0)?.mediaUrl}.wav`
+  const recordings = await twilio.recordings.list({ callSid: sid })
+  const recordingUrls = recordings.map((recording) => recording.mediaUrl)
 
-  return { phoneCall, recordingUrl }
+  return { phoneCall, recordingUrls }
 }
 
 export async function POST(request: Request) {
