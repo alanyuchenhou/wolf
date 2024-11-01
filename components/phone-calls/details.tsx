@@ -24,7 +24,7 @@ export function PhoneCallDetails({
   useEffect(() => {
     const fetchTranscription = async () => {
       const response = await fetch(
-        `/api/transcriptions/?callSid=${result.phoneCall.sid}`,
+        `/api/transcriptions/${result.phoneCall.sid}`,
       )
       const transcription = await response.json()
       setTranscription(transcription)
