@@ -1,8 +1,10 @@
 import { auth } from '@/app/(auth)/auth'
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const callSid = searchParams.get('callSid')
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ callSid: string }> },
+) {
+  const callSid = (await params).callSid
   if (!callSid) {
     return Response.json('Bad Request: Missing callSid', { status: 400 })
   }
