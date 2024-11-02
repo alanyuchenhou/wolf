@@ -60,6 +60,7 @@ export function MultimodalInput({
       'Make a phone call',
       'Make a voice agent',
       'Display call history',
+      'Display agents',
     ]
     setSuggestedActions([
       _.sample(flightActions) || '',
