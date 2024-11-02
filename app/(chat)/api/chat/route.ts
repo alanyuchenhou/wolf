@@ -10,6 +10,7 @@ import {
   generateSampleSeatSelection,
 } from '@/ai/actions'
 import { auth } from '@/app/(auth)/auth'
+import { Agent } from '@/app/(chat)/api/agents/types'
 import {
   createReservation,
   deleteChatById,
@@ -73,6 +74,22 @@ async function getPhoneCallWithRecording(sid: string) {
   return { phoneCall, recordingUrls }
 }
 
+async function listAgents() {
+  const storage_service_url = process.env.GCP_STORAGE_SERVICE_URL
+  if (!storage_service_url) {
+    throw new Error('Missing required environment variables')
+  }
+  const response = await fetch(`${storage_service_url}/agents`)
+  const data = await response.json()
+  const agents = data.map((agent: Agent) => ({
+    id: agent.id,
+    name: agent.name,
+    created: agent.created.split('.')[0],
+    updated: agent.updated.split('.')[0],
+  }))
+  return { agents }
+}
+
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
     await request.json()
@@ -94,6 +111,7 @@ export async function POST(request: Request) {
         - DO NOT output lists.
         - after every tool call, pretend you're showing the result to the user and keep your response limited to a phrase.
         - today's date is ${new Date().toLocaleDateString()}.
+        - if the user wants you to display agents, call the displayAgents tool.
         - ask follow up questions to nudge user into the optimal flow
         - ask for any details you don't know, like name of passenger, etc.'
         - C and D are aisle seats, A and F are window seats, B and E are middle seats
@@ -279,6 +297,19 @@ export async function POST(request: Request) {
         execute: async ({ phoneNumber }) => {
           const phoneCall = await createPhoneCall(phoneNumber)
           return phoneCall
+        },
+      },
+      displayAgents: {
+        description: 'Display the list of available agents',
+        parameters: z.object({
+          limit: z
+            .number()
+            .optional()
+            .describe('the number of the agents to display'),
+        }),
+        execute: async ({ limit }) => {
+          const agents = await listAgents()
+          return agents
         },
       },
       makeAgent: {

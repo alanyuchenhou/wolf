@@ -9,6 +9,7 @@ import { Markdown } from './markdown'
 import { PreviewAttachment } from './preview-attachment'
 import { Weather } from './weather'
 import { AgentEditor } from '../agents/editor'
+import { AgentList } from '../agents/list'
 import { AuthorizePayment } from '../flights/authorize-payment'
 import { DisplayBoardingPass } from '../flights/boarding-pass'
 import { CreateReservation } from '../flights/create-reservation'
@@ -86,6 +87,8 @@ export const Message = ({
                       <PhoneCallConfirmation phoneCall={result} />
                     ) : toolName === 'makeAgent' ? (
                       <AgentEditor chatId={chatId} agent={result} />
+                    ) : toolName === 'displayAgents' ? (
+                      <AgentList result={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}
