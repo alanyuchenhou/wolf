@@ -312,11 +312,11 @@ export async function POST(request: Request) {
           return agents
         },
       },
-      makeAgent: {
+      createAgent: {
         description:
           'Make a voice agnet (ask the user to save the agent and let you know when done)',
         parameters: z.object({
-          name: z.string().describe('the name of the agent, e.g. Javis'),
+          name: z.string().optional().describe('the name of the agent'),
         }),
         execute: async (name) => {
           return name
