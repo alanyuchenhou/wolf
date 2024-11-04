@@ -8,6 +8,12 @@ export async function POST(request: Request) {
   }
 
   const { name, systemInstruction } = await request.json()
+  if (!name) {
+    return new Response('name is required', { status: 400 })
+  }
+  if (!systemInstruction) {
+    return new Response('systemInstruction is required', { status: 400 })
+  }
 
   const storage_service_url = process.env.GCP_STORAGE_SERVICE_URL
   if (!storage_service_url) {
