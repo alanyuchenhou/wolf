@@ -58,8 +58,8 @@ export function MultimodalInput({
     ]
     const phoneCallActions: string[] = [
       'Make a phone call',
-      'Make a voice agent',
       'Display call history',
+      'Create an agent',
       'Display agents',
     ]
     setSuggestedActions([
