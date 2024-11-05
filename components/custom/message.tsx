@@ -10,6 +10,7 @@ import { PreviewAttachment } from './preview-attachment'
 import { Weather } from './weather'
 import { AgentEditor } from '../agents/editor'
 import { AgentList } from '../agents/list'
+import { AgentViewer } from '../agents/viewer'
 import { AuthorizePayment } from '../flights/authorize-payment'
 import { DisplayBoardingPass } from '../flights/boarding-pass'
 import { CreateReservation } from '../flights/create-reservation'
@@ -88,7 +89,9 @@ export const Message = ({
                     ) : toolName === 'createAgent' ? (
                       <AgentEditor chatId={chatId} result={result} />
                     ) : toolName === 'displayAgents' ? (
-                      <AgentList result={result} />
+                      <AgentList chatId={chatId} result={result} />
+                    ) : toolName === 'displayAgentDetails' ? (
+                      <AgentViewer result={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}

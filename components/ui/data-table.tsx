@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -17,18 +18,26 @@ import {
 } from '@/components/ui/table'
 
 interface DataTableProps<TData, TValue> {
+  append: any
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
 export function DataTable<TData, TValue>({
+  append,
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const columnVisibility: VisibilityState = {
+    id: false,
+  }
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      columnVisibility,
+    },
   })
 
   return (
@@ -58,6 +67,12 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
+                onClick={() => {
+                  append({
+                    role: 'user',
+                    content: `Display the details of agent ${row.getValue('name')} with ID ${row.getValue('id')}`,
+                  })
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
