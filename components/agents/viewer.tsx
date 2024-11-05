@@ -1,6 +1,8 @@
+import { useChat } from 'ai/react'
 import React, { useEffect, useState } from 'react'
 
 import { AgentDetails } from '@/app/(chat)/api/agents/types'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -11,12 +13,22 @@ import {
 import { Separator } from '@/components/ui/separator'
 
 export function AgentViewer({
+  chatId,
   result,
 }: {
+  chatId: string
   result: { id: string; name: string }
 }) {
+  const { append } = useChat({
+    id: chatId,
+    body: { id: chatId },
+    maxSteps: 5,
+  })
   const [agentdetails, setAgentDetails] = useState<AgentDetails>({
-    systemInstruction: '',
+    name: '',
+    details: {
+      systemInstruction: '',
+    },
   })
   useEffect(() => {
     const fetchAgentDetails = async () => {
@@ -30,7 +42,7 @@ export function AgentViewer({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{result.name}</CardTitle>
+        <CardTitle>{agentdetails.name}</CardTitle>
         <CardDescription>
           <span>ID: {result.id}</span>
         </CardDescription>
@@ -38,8 +50,18 @@ export function AgentViewer({
       <CardContent>
         <h1>System Instruction</h1>
         <Separator className='my-4' />
-        <p>{agentdetails.systemInstruction}</p>
+        <p>{agentdetails.details.systemInstruction}</p>
       </CardContent>
+      <Button
+        onClick={() => {
+          append({
+            role: 'user',
+            content: `Open the agent editor for agent with name ${result.name} with ID ${result.id}.`,
+          })
+        }}
+      >
+        Edit
+      </Button>
     </Card>
   )
 }

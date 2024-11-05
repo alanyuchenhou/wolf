@@ -1,10 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useChat } from 'ai/react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { AgentDetails } from '@/app/(chat)/api/agents/types'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -23,7 +31,7 @@ export function AgentEditor({
   result,
 }: {
   chatId: string
-  result: { name: string }
+  result: { id: string; name: string }
 }) {
   const { append } = useChat({
     id: chatId,
@@ -44,6 +52,18 @@ export function AgentEditor({
         message: 'The system instruction can not exceed 100000 characters.',
       }),
   })
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  })
+  useEffect(() => {
+    const fetchAgentDetails = async () => {
+      const response = await fetch(`/api/agents/${result.id}`)
+      const agentdetails = await response.json()
+      form.setValue('name', agentdetails.name || '')
+      form.setValue('instruction', agentdetails.details.systemInstruction || '')
+    }
+    fetchAgentDetails()
+  }, [result, form])
 
   async function onFormSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch(`/api/agents`, {
@@ -62,19 +82,12 @@ export function AgentEditor({
     return id
   }
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: result.name,
-      instruction: '',
-    },
-  })
-
   return (
     <div className='grid gap-4'>
       <Card>
         <CardHeader>
-          <CardTitle>New Agent</CardTitle>
+          <CardTitle>Agent Editor</CardTitle>
+          <CardDescription>ID: {result.id}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

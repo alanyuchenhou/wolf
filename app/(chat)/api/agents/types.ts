@@ -6,5 +6,8 @@ export interface Agent {
 }
 
 export interface AgentDetails {
-  systemInstruction: string
+  name: string
+  details: {
+    systemInstruction: string
+  }
 }

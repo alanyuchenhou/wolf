@@ -88,10 +88,12 @@ export const Message = ({
                       <PhoneCallConfirmation phoneCall={result} />
                     ) : toolName === 'createAgent' ? (
                       <AgentEditor chatId={chatId} result={result} />
+                    ) : toolName === 'openAgentEditor' ? (
+                      <AgentEditor chatId={chatId} result={result} />
                     ) : toolName === 'displayAgents' ? (
                       <AgentList chatId={chatId} result={result} />
                     ) : toolName === 'displayAgentDetails' ? (
-                      <AgentViewer result={result} />
+                      <AgentViewer chatId={chatId} result={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}
