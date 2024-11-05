@@ -4,3 +4,7 @@ export interface Agent {
   created: string
   updated: string
 }
+
+export interface AgentDetails {
+  systemInstruction: string
+}

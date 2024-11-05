@@ -322,6 +322,16 @@ export async function POST(request: Request) {
           return name
         },
       },
+      displayAgentDetails: {
+        description: 'Display the agent details given an agent ID',
+        parameters: z.object({
+          id: z.string().describe('the ID of the agent'),
+          name: z.string().describe('the name of the agent'),
+        }),
+        execute: async ({ id, name }) => {
+          return { id, name }
+        },
+      },
       displayCallHistory: {
         description:
           'Display the list of most recent phone calls up to the given amount limit',
