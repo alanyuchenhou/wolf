@@ -86,8 +86,6 @@ export const Message = ({
                       <PhoneCallDetails result={result} />
                     ) : toolName === 'makePhoneCall' ? (
                       <PhoneCallConfirmation phoneCall={result} />
-                    ) : toolName === 'createAgent' ? (
-                      <AgentEditor chatId={chatId} result={result} />
                     ) : toolName === 'openAgentEditor' ? (
                       <AgentEditor chatId={chatId} result={result} />
                     ) : toolName === 'displayAgents' ? (

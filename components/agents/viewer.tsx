@@ -52,7 +52,7 @@ export function AgentViewer({
         <p>{agentdetails.name}</p>
         <Separator className='my-4' />
         <h1>System Instruction</h1>
-        <p>{agentdetails.details.systemInstruction}</p>
+        <p>{agentdetails.details?.systemInstruction}</p>
       </CardContent>
       <Button
         onClick={() => {

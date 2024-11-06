@@ -1,4 +1,5 @@
 import { auth } from '@/app/(auth)/auth'
+import { getAgentsUrl } from '@/app/(chat)/api/urls'
 
 export async function POST(request: Request) {
   const session = await auth()
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
     throw new Error('Missing required environment variables')
   }
 
-  const response = await fetch(`${storage_service_url}/agents`, {
+  const response = await fetch(getAgentsUrl(), {
     method: 'POST',
     body: JSON.stringify({ name, systemInstruction }),
     headers: { 'Content-type': 'application/json; charset=UTF-8' },

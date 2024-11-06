@@ -11,6 +11,7 @@ import {
 } from '@/ai/actions'
 import { auth } from '@/app/(auth)/auth'
 import { Agent } from '@/app/(chat)/api/agents/types'
+import { getAgentsUrl } from '@/app/(chat)/api/urls'
 import {
   createReservation,
   deleteChatById,
@@ -74,12 +75,22 @@ async function getPhoneCallWithRecording(sid: string) {
   return { phoneCall, recordingUrls }
 }
 
+async function createAgent(name: string) {
+  const response = await fetch(getAgentsUrl(), {
+    method: 'POST',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify({ name }),
+  })
+  const agent = await response.json()
+  return agent
+}
+
 async function listAgents() {
   const storage_service_url = process.env.GCP_STORAGE_SERVICE_URL
   if (!storage_service_url) {
     throw new Error('Missing required environment variables')
   }
-  const response = await fetch(`${storage_service_url}/agents`)
+  const response = await fetch(getAgentsUrl())
   const data = await response.json()
   const agents = data.map((agent: Agent) => ({
     id: agent.id,
@@ -313,13 +324,13 @@ export async function POST(request: Request) {
         },
       },
       createAgent: {
-        description:
-          'Make a voice agnet (ask the user to save the agent and let you know when done)',
+        description: 'Create a voice agnet',
         parameters: z.object({
-          name: z.string().optional().describe('the name of the agent'),
+          name: z.string().describe('the name of the agent'),
         }),
-        execute: async (name) => {
-          return name
+        execute: async ({ name }) => {
+          const agent = await createAgent(name)
+          return agent
         },
       },
       openAgentEditor: {
