@@ -42,14 +42,16 @@ export function AgentViewer({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{agentdetails.name}</CardTitle>
+        <CardTitle>Agent Viewer</CardTitle>
         <CardDescription>
           <span>ID: {result.id}</span>
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <h1>System Instruction</h1>
+        <h1>Name</h1>
+        <p>{agentdetails.name}</p>
         <Separator className='my-4' />
+        <h1>System Instruction</h1>
         <p>{agentdetails.details.systemInstruction}</p>
       </CardContent>
       <Button
