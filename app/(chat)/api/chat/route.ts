@@ -101,6 +101,14 @@ async function listAgents() {
   return { agents }
 }
 
+async function deleteAgent(id: string) {
+  const response = await fetch(`${getAgentsUrl()}/${id}`, {
+    method: 'DELETE',
+  })
+  const agent = await response.json()
+  return agent
+}
+
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
     await request.json()
@@ -352,6 +360,16 @@ export async function POST(request: Request) {
         }),
         execute: async ({ id, name }) => {
           return { id, name }
+        },
+      },
+      deleteAgent: {
+        description: 'Delete the agent with the given ID',
+        parameters: z.object({
+          id: z.string().describe('the ID of the agent'),
+        }),
+        execute: async ({ id }) => {
+          const agent = await deleteAgent(id)
+          return agent
         },
       },
       displayCallHistory: {
