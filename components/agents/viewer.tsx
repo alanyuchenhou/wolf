@@ -47,23 +47,23 @@ export function AgentViewer({
           <span>ID: {result.id}</span>
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className='space-y-2'>
         <h1>Name</h1>
         <p>{agentdetails.name}</p>
         <Separator className='my-4' />
         <h1>System Instruction</h1>
         <p>{agentdetails.details?.systemInstruction}</p>
+        <Button
+          onClick={() => {
+            append({
+              role: 'user',
+              content: `Open the agent editor for agent with name ${result.name} with ID ${result.id}.`,
+            })
+          }}
+        >
+          Edit
+        </Button>
       </CardContent>
-      <Button
-        onClick={() => {
-          append({
-            role: 'user',
-            content: `Open the agent editor for agent with name ${result.name} with ID ${result.id}.`,
-          })
-        }}
-      >
-        Edit
-      </Button>
     </Card>
   )
 }

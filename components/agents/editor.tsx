@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { AgentDetails } from '@/app/(chat)/api/agents/types'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -66,18 +65,20 @@ export function AgentEditor({
   }, [result, form])
 
   async function onFormSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch(`/api/agents`, {
-      method: 'POST',
+    const response = await fetch(`/api/agents/${result.id}`, {
+      method: 'PUT',
       body: JSON.stringify({
         name: values.name,
-        systemInstruction: values.instruction,
+        details: {
+          systemInstruction: values.instruction,
+        },
       }),
-      headers: { 'Content-type': 'application/json; charset=UTF-8' },
+      headers: { 'Content-type': 'application/json' },
     })
     const { id } = await response.json()
     append({
       role: 'user',
-      content: `I have saved my agent ${values.name}.`,
+      content: `I have saved my agent ${values.name} with ID ${id}.`,
     })
     return id
   }
