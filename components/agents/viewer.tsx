@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -53,17 +54,30 @@ export function AgentViewer({
         <Separator className='my-4' />
         <h1>System Instruction</h1>
         <p>{agentdetails.details?.systemInstruction}</p>
+      </CardContent>
+      <CardFooter className='flex justify-between'>
         <Button
           onClick={() => {
             append({
               role: 'user',
-              content: `Open the agent editor for agent with name ${result.name} with ID ${result.id}.`,
+              content: `Open the agent editor for agent ${result.name} with ID ${result.id}.`,
             })
           }}
         >
           Edit
         </Button>
-      </CardContent>
+        <Button
+          variant='destructive'
+          onClick={() => {
+            append({
+              role: 'user',
+              content: `Delete agent ${result.name} with ID ${result.id}.`,
+            })
+          }}
+        >
+          Delete
+        </Button>
+      </CardFooter>
     </Card>
   )
 }
