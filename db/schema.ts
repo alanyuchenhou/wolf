@@ -17,6 +17,14 @@ export const user = pgTable('User', {
 
 export type User = InferSelectModel<typeof user>
 
+export const phoneNumber = pgTable('PhoneNumber', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  e164: varchar('e164', { length: 32 }).notNull(),
+  agentId: varchar('agentId', { length: 32 }),
+})
+
+export type PhoneNumber = InferSelectModel<typeof phoneNumber>
+
 export const chat = pgTable('Chat', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   createdAt: timestamp('createdAt').notNull(),

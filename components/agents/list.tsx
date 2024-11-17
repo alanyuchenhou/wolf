@@ -28,7 +28,12 @@ export function AgentList({
   })
   return (
     <div className='container mx-auto py-10'>
-      <DataTable append={append} columns={columns} data={result.agents} />
+      <DataTable
+        clickMessage='Display the details of agent'
+        append={append}
+        columns={columns}
+        data={result.agents}
+      />
     </div>
   )
 }

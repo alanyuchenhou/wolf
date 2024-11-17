@@ -18,6 +18,11 @@ import {
   getChatById,
   getReservationById,
   saveChat,
+  createPhoneNumber,
+  listPhoneNumbers,
+  getPhoneNumber,
+  updatePhoneNumber,
+  deletePhoneNumber,
 } from '@/db/queries'
 import { generateUUID } from '@/lib/utils'
 
@@ -298,11 +303,7 @@ export async function POST(request: Request) {
       makePhoneCall: {
         description: 'Make a phone call to a given phone number',
         parameters: z.object({
-          phoneNumber: z
-            .string()
-            .describe(
-              'the phone number to call in E.164 format, e.g. +10123456789 in US',
-            ),
+          phoneNumber: z.string().describe('the phone number in E.164 format'),
         }),
         execute: async ({ phoneNumber }) => {
           const phoneCall = await createPhoneCall(phoneNumber)
@@ -347,7 +348,7 @@ export async function POST(request: Request) {
         description: 'Display the agent details given an agent ID',
         parameters: z.object({
           id: z.string().describe('the ID of the agent'),
-          name: z.string().describe('the name of the agent'),
+          name: z.string().optional().describe('the name of the agent'),
         }),
         execute: async ({ id, name }) => {
           return { id, name }
@@ -386,6 +387,60 @@ export async function POST(request: Request) {
         execute: async ({ sid }) => {
           const phoneCallWithRecording = await getPhoneCallWithRecording(sid)
           return phoneCallWithRecording
+        },
+      },
+      createPhoneNumber: {
+        description: 'Create a phone number',
+        parameters: z.object({
+          e164: z.string().describe('the phone number in E.164 format'),
+        }),
+        execute: async ({ e164 }) => {
+          await createPhoneNumber(e164)
+          return { phoneNumber: e164 }
+        },
+      },
+      displayPhoneNumbers: {
+        description: 'Display the list of available phone numbers',
+        parameters: z.object({
+          limit: z
+            .number()
+            .optional()
+            .describe('the number of the agents to display'),
+        }),
+        execute: async () => {
+          const phoneNumbers = await listPhoneNumbers()
+          return { phoneNumbers }
+        },
+      },
+      displayPhoneNumberDetails: {
+        description: 'Display the phone number details given a phone number ID',
+        parameters: z.object({
+          id: z.string().describe('the ID of the phone number'),
+        }),
+        execute: async ({ id }) => {
+          const phoneNumber = await getPhoneNumber(id)
+          return { phoneNumber }
+        },
+      },
+      assignPhoneNumber: {
+        description: 'Assign a phone number to an agent',
+        parameters: z.object({
+          id: z.string().describe('the phone number in E.164 format'),
+          agentId: z.string().describe('the ID of the agent'),
+        }),
+        execute: async ({ id, agentId }) => {
+          await updatePhoneNumber({ id, agentId })
+          return { id, agentId }
+        },
+      },
+      deletePhoneNumber: {
+        description: 'Delete the phone number with the given ID',
+        parameters: z.object({
+          id: z.string().describe('the ID of the phone number'),
+        }),
+        execute: async ({ id }) => {
+          await deletePhoneNumber(id)
+          return { id }
         },
       },
     },
