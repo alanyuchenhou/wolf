@@ -5,7 +5,7 @@ import { desc, eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-import { user, chat, User, reservation } from './schema'
+import { user, chat, User, reservation, phoneNumber } from './schema'
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -34,6 +34,61 @@ export async function createUser(email: string, password: string) {
   }
 }
 
+export async function createPhoneNumber(e164: string) {
+  try {
+    return await db.insert(phoneNumber).values({ e164 })
+  } catch (error) {
+    console.error('Failed to create phone number in database:', error)
+    throw error
+  }
+}
+
+export async function listPhoneNumbers() {
+  try {
+    return await db.select().from(phoneNumber)
+  } catch (error) {
+    console.error('Failed to get phone number', error)
+    throw error
+  }
+}
+
+export async function getPhoneNumber(id: string) {
+  try {
+    return await db.select().from(phoneNumber).where(eq(phoneNumber.id, id))
+  } catch (error) {
+    console.error('Failed to get phone number by e164 from database:', error)
+    throw error
+  }
+}
+
+export async function updatePhoneNumber({
+  id,
+  agentId,
+}: {
+  id: string
+  agentId: string
+}) {
+  try {
+    return await db
+      .update(phoneNumber)
+      .set({
+        agentId,
+      })
+      .where(eq(phoneNumber.id, id))
+  } catch (error) {
+    console.error('Failed to update phone number', error)
+    throw error
+  }
+}
+
+export async function deletePhoneNumber(id: string) {
+  try {
+    return await db.delete(phoneNumber).where(eq(phoneNumber.id, id))
+  } catch (error) {
+    console.error('Failed to delete chat by id from database')
+    throw error
+  }
+}
 export async function saveChat({
   id,
   messages,

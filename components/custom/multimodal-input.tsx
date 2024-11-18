@@ -61,6 +61,8 @@ export function MultimodalInput({
       'Display call history',
       'Create an agent',
       'Display agents',
+      'Create a phone number',
+      'Display phone numbers',
     ]
     setSuggestedActions([
       _.sample(flightActions) || '',

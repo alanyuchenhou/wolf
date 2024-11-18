@@ -18,12 +18,14 @@ import {
 } from '@/components/ui/table'
 
 interface DataTableProps<TData, TValue> {
+  clickMessage: string
   append: any
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
 export function DataTable<TData, TValue>({
+  clickMessage,
   append,
   columns,
   data,
@@ -70,7 +72,7 @@ export function DataTable<TData, TValue>({
                 onClick={() => {
                   append({
                     role: 'user',
-                    content: `Display the details of agent ${row.getValue('name')} with ID ${row.getValue('id')}`,
+                    content: `${clickMessage} with ID ${row.getValue('id')}`,
                   })
                 }}
               >
