@@ -18,14 +18,14 @@ export function AgentViewer({
   result,
 }: {
   chatId: string
-  result: { id: string; name: string }
+  result: { id: string }
 }) {
   const { append } = useChat({
     id: chatId,
     body: { id: chatId },
     maxSteps: 5,
   })
-  const [agentdetails, setAgentDetails] = useState<AgentDetails>({
+  const [agentDetails, setAgentDetails] = useState<AgentDetails>({
     name: '',
     details: {
       systemInstruction: '',
@@ -50,17 +50,17 @@ export function AgentViewer({
       </CardHeader>
       <CardContent className='space-y-2'>
         <h1>Name</h1>
-        <p>{agentdetails.name}</p>
+        <p>{agentDetails.name}</p>
         <Separator className='my-4' />
         <h1>System Instruction</h1>
-        <p>{agentdetails.details?.systemInstruction}</p>
+        <p>{agentDetails.details?.systemInstruction}</p>
       </CardContent>
       <CardFooter className='flex justify-between'>
         <Button
           onClick={() => {
             append({
               role: 'user',
-              content: `Open the agent editor for agent ${result.name} with ID ${result.id}.`,
+              content: `Open the agent editor for agent ${agentDetails.name} with ID ${result.id}.`,
             })
           }}
         >
@@ -71,7 +71,7 @@ export function AgentViewer({
           onClick={() => {
             append({
               role: 'user',
-              content: `Delete agent ${result.name} with ID ${result.id}.`,
+              content: `Delete agent ${agentDetails.name} with ID ${result.id}.`,
             })
           }}
         >

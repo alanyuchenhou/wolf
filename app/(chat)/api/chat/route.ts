@@ -334,21 +334,18 @@ export async function POST(request: Request) {
         },
       },
       openAgentEditor: {
-        description:
-          'Open the agent editor for an agent with given name and ID',
+        description: 'Open the agent editor for an agent with given ID',
         parameters: z.object({
           id: z.string().describe('the ID of the agent'),
-          name: z.string().describe('the name of the agent'),
         }),
         execute: async ({ id, name }) => {
           return { id, name }
         },
       },
-      displayAgentDetails: {
-        description: 'Display the agent details given an agent ID',
+      openAgentViewer: {
+        description: 'Open the agent viewer for an agent with given ID',
         parameters: z.object({
           id: z.string().describe('the ID of the agent'),
-          name: z.string().optional().describe('the name of the agent'),
         }),
         execute: async ({ id, name }) => {
           return { id, name }
