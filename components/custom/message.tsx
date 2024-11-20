@@ -91,7 +91,7 @@ export const Message = ({
                       <AgentEditor chatId={chatId} result={result} />
                     ) : toolName === 'displayAgents' ? (
                       <AgentList chatId={chatId} result={result} />
-                    ) : toolName === 'displayAgentDetails' ? (
+                    ) : toolName === 'openAgentViewer' ? (
                       <AgentViewer chatId={chatId} result={result} />
                     ) : toolName === 'displayPhoneNumbers' ? (
                       <PhoneNumberList chatId={chatId} result={result} />

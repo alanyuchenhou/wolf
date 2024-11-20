@@ -30,7 +30,7 @@ export function AgentEditor({
   result,
 }: {
   chatId: string
-  result: { id: string; name: string }
+  result: { id: string }
 }) {
   const { append } = useChat({
     id: chatId,
