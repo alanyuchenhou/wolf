@@ -35,7 +35,10 @@ export function AgentList({
         columns={columns}
         data={result.agents}
       />
-      <Suggestions suggestions={['Create an agent']} append={append} />
+      <Suggestions
+        suggestions={['Create an agent', 'Make a phone call']}
+        append={append}
+      />
     </div>
   )
 }
