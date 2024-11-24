@@ -106,6 +106,7 @@ export async function POST(request: Request) {
         - ask for any details you don't know.
         - if the user wants you to display or list agents, call the displayAgents tool.
         - after the user creates an agents, call the displayAgents tool.
+        - after the user deletes an agent, call the displayAgents tool.
         '
       `,
     messages: coreMessages,
