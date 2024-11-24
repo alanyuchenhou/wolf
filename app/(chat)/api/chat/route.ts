@@ -10,8 +10,6 @@ import {
   generateSampleSeatSelection,
 } from '@/ai/actions'
 import { auth } from '@/app/(auth)/auth'
-import { Agent } from '@/app/(chat)/api/agents/types'
-import { getAgentsUrl } from '@/app/(chat)/api/urls'
 import {
   createReservation,
   deleteChatById,
@@ -23,6 +21,9 @@ import {
   getPhoneNumber,
   updatePhoneNumber,
   deletePhoneNumber,
+  createAgent,
+  listAgents,
+  deleteAgent,
 } from '@/db/queries'
 import { generateUUID } from '@/lib/utils'
 
@@ -80,40 +81,6 @@ async function getPhoneCallWithRecording(sid: string) {
   return { phoneCall, recordingUrls }
 }
 
-async function createAgent(name: string) {
-  const response = await fetch(getAgentsUrl(), {
-    method: 'POST',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify({ name }),
-  })
-  const agent = await response.json()
-  return agent
-}
-
-async function listAgents() {
-  const storage_service_url = process.env.GCP_STORAGE_SERVICE_URL
-  if (!storage_service_url) {
-    throw new Error('Missing required environment variables')
-  }
-  const response = await fetch(getAgentsUrl())
-  const data = await response.json()
-  const agents = data.map((agent: Agent) => ({
-    id: agent.id,
-    name: agent.name,
-    created: agent.created.split('.')[0],
-    updated: agent.updated.split('.')[0],
-  }))
-  return { agents }
-}
-
-async function deleteAgent(id: string) {
-  const response = await fetch(`${getAgentsUrl()}/${id}`, {
-    method: 'DELETE',
-  })
-  const agent = await response.json()
-  return agent
-}
-
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
     await request.json()
@@ -138,6 +105,7 @@ export async function POST(request: Request) {
         - ask follow up questions to nudge user into the optimal flow.
         - ask for any details you don't know.
         - if the user wants you to display or list agents, call the displayAgents tool.
+        - after the user creates an agents, call the displayAgents tool.
         '
       `,
     messages: coreMessages,
@@ -319,8 +287,11 @@ export async function POST(request: Request) {
             .describe('the number of the agents to display'),
         }),
         execute: async ({ limit }) => {
-          const agents = await listAgents()
-          return agents
+          if (session && session.user && session.user.id) {
+            const agents = await listAgents({ userId: session.user.id })
+            return { agents }
+          }
+          return { error: 'User is not signed in to perform this action!' }
         },
       },
       createAgent: {
@@ -329,8 +300,12 @@ export async function POST(request: Request) {
           name: z.string().describe('the name of the agent'),
         }),
         execute: async ({ name }) => {
-          const agent = await createAgent(name)
-          return agent
+          if (session && session.user && session.user.id) {
+            const agent = await createAgent({ name, userId: session.user.id })
+            return { agent: name }
+          } else {
+            return { error: 'User is not signed in to perform this action!' }
+          }
         },
       },
       openAgentEditor: {
@@ -355,10 +330,11 @@ export async function POST(request: Request) {
         description: 'Delete the agent with the given ID',
         parameters: z.object({
           id: z.string().describe('the ID of the agent'),
+          name: z.string().describe('the name of the agent'),
         }),
-        execute: async ({ id }) => {
-          const agent = await deleteAgent(id)
-          return agent
+        execute: async ({ id, name }) => {
+          const agent = await deleteAgent({ id })
+          return { agent: name }
         },
       },
       displayCallHistory: {

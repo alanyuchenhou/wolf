@@ -7,6 +7,7 @@ import {
   json,
   uuid,
   boolean,
+  text,
 } from 'drizzle-orm/pg-core'
 
 export const user = pgTable('User', {
@@ -16,6 +17,18 @@ export const user = pgTable('User', {
 })
 
 export type User = InferSelectModel<typeof user>
+
+export const agent = pgTable('Agent', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  name: text('name').notNull().default(''),
+  systemInstruction: text('systemInstruction').notNull().default(''),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id),
+})
+export type Agent = InferSelectModel<typeof agent>
 
 export const phoneNumber = pgTable('PhoneNumber', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),

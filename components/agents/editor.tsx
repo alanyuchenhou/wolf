@@ -58,8 +58,8 @@ export function AgentEditor({
     const fetchAgentDetails = async () => {
       const response = await fetch(`/api/agents/${result.id}`)
       const agentdetails = await response.json()
-      form.setValue('name', agentdetails.name || '')
-      form.setValue('instruction', agentdetails.details.systemInstruction || '')
+      form.setValue('name', agentdetails.name)
+      form.setValue('instruction', agentdetails.systemInstruction)
     }
     fetchAgentDetails()
   }, [result, form])
@@ -69,18 +69,15 @@ export function AgentEditor({
       method: 'PUT',
       body: JSON.stringify({
         name: values.name,
-        details: {
-          systemInstruction: values.instruction,
-        },
+        systemInstruction: values.instruction,
       }),
       headers: { 'Content-type': 'application/json' },
     })
-    const { id } = await response.json()
     append({
       role: 'user',
-      content: `I have saved my agent ${values.name} with ID ${id}.`,
+      content: `I have saved my agent ${values.name} with ID ${result.id}.`,
     })
-    return id
+    return result.id
   }
 
   return (
