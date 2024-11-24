@@ -1,5 +1,5 @@
 import { auth } from '@/app/(auth)/auth'
-import { getAgentsUrl } from '@/app/(chat)/api/urls'
+import { getAgent, updateAgent } from '@/db/queries'
 
 export async function GET(
   request: Request,
@@ -15,8 +15,10 @@ export async function GET(
   if (!session || !session.user) {
     return Response.json('Unauthorized!', { status: 401 })
   }
-  const response = await fetch(`${getAgentsUrl()}/${id}`)
-  return response
+  const agent = await getAgent({ id })
+  return agent
+    ? Response.json(agent)
+    : Response.json('Not Found: Agent does not exist', { status: 404 })
 }
 
 export async function PUT(
@@ -34,17 +36,15 @@ export async function PUT(
     return Response.json('Unauthorized!', { status: 401 })
   }
 
-  const { name, details } = await request.json()
+  const { name, systemInstruction } = await request.json()
   if (!name) {
     return new Response('name is required', { status: 400 })
   }
-  if (!details) {
-    return new Response('details is required', { status: 400 })
+  if (!systemInstruction) {
+    return new Response('systemInstruction is required', { status: 400 })
   }
-  const response = await fetch(`${getAgentsUrl()}/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify({ name, details }),
-    headers: { 'Content-type': 'application/json' },
-  })
-  return response
+  const agent = await updateAgent({ id, name, systemInstruction })
+  return agent
+    ? Response.json(agent)
+    : Response.json('Not Found: Agent does not exist', { status: 404 })
 }

@@ -5,7 +5,7 @@ import { desc, eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-import { user, chat, User, reservation, phoneNumber } from './schema'
+import { user, chat, User, reservation, phoneNumber, agent } from './schema'
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -30,6 +30,76 @@ export async function createUser(email: string, password: string) {
     return await db.insert(user).values({ email, password: hash })
   } catch (error) {
     console.error('Failed to create user in database')
+    throw error
+  }
+}
+
+export async function createAgent({
+  name,
+  userId,
+}: {
+  name: string
+  userId: string
+}) {
+  try {
+    return await db.insert(agent).values({ name, userId })
+  } catch (error) {
+    console.error('Failed to create agent in database:', error)
+    throw error
+  }
+}
+
+export async function listAgents({ userId }: { userId: string }) {
+  try {
+    return await db.select().from(agent).where(eq(agent.userId, userId))
+  } catch (error) {
+    console.error('Failed to get agent by user from database:', error)
+    throw error
+  }
+}
+
+export async function getAgent({ id }: { id: string }) {
+  try {
+    const [selectedAgent] = await db
+      .select()
+      .from(agent)
+      .where(eq(agent.id, id))
+    return selectedAgent
+  } catch (error) {
+    console.error('Failed to get agent by id from database:', error)
+    throw error
+  }
+}
+
+export async function updateAgent({
+  id,
+  name,
+  systemInstruction,
+}: {
+  id: string
+  name: string
+  systemInstruction: string
+}) {
+  try {
+    return await db
+      .update(agent)
+      .set({
+        name,
+        systemInstruction,
+        updatedAt: new Date(),
+      })
+      .where(eq(agent.id, id))
+  } catch (error) {
+    console.error('Failed to update agent in database:', error)
+    throw error
+  }
+}
+
+export async function deleteAgent({ id }: { id: string }) {
+  try {
+    return await db.delete(agent).where(eq(agent.id, id))
+  } catch (error) {
+    console.error('Failed to delete agent by id from database:', error)
     throw error
   }
 }
@@ -89,6 +159,7 @@ export async function deletePhoneNumber(id: string) {
     throw error
   }
 }
+
 export async function saveChat({
   id,
   messages,
