@@ -2,9 +2,8 @@ import { ColumnDef } from '@tanstack/react-table'
 import { useChat } from 'ai/react'
 
 import { Agent } from '@/app/(chat)/api/agents/types'
+import { Suggestions } from '@/components/custom/suggestions'
 import { DataTable } from '@/components/ui/data-table'
-
-import { Suggestions } from '../custom/suggestions'
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

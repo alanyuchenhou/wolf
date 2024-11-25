@@ -104,27 +104,40 @@ export async function deleteAgent({ id }: { id: string }) {
   }
 }
 
-export async function createPhoneNumber(e164: string) {
+export async function createPhoneNumber({
+  e164,
+  userId,
+}: {
+  e164: string
+  userId: string
+}) {
   try {
-    return await db.insert(phoneNumber).values({ e164 })
+    return await db.insert(phoneNumber).values({ e164, userId })
   } catch (error) {
     console.error('Failed to create phone number in database:', error)
     throw error
   }
 }
 
-export async function listPhoneNumbers() {
+export async function listPhoneNumbers({ userId }: { userId: string }) {
   try {
-    return await db.select().from(phoneNumber)
+    return await db
+      .select()
+      .from(phoneNumber)
+      .where(eq(phoneNumber.userId, userId))
   } catch (error) {
     console.error('Failed to get phone number', error)
     throw error
   }
 }
 
-export async function getPhoneNumber(id: string) {
+export async function getPhoneNumber({ id }: { id: string }) {
   try {
-    return await db.select().from(phoneNumber).where(eq(phoneNumber.id, id))
+    const [selectedPhoneNumber] = await db
+      .select()
+      .from(phoneNumber)
+      .where(eq(phoneNumber.id, id))
+    return selectedPhoneNumber
   } catch (error) {
     console.error('Failed to get phone number by e164 from database:', error)
     throw error
@@ -143,6 +156,7 @@ export async function updatePhoneNumber({
       .update(phoneNumber)
       .set({
         agentId,
+        updatedAt: new Date(),
       })
       .where(eq(phoneNumber.id, id))
   } catch (error) {
@@ -151,11 +165,11 @@ export async function updatePhoneNumber({
   }
 }
 
-export async function deletePhoneNumber(id: string) {
+export async function deletePhoneNumber({ id }: { id: string }) {
   try {
     return await db.delete(phoneNumber).where(eq(phoneNumber.id, id))
   } catch (error) {
-    console.error('Failed to delete chat by id from database')
+    console.error('Failed to delete phone number by id from database', error)
     throw error
   }
 }

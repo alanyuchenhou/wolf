@@ -32,8 +32,13 @@ export type Agent = InferSelectModel<typeof agent>
 
 export const phoneNumber = pgTable('PhoneNumber', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
-  e164: varchar('e164', { length: 32 }).notNull(),
-  agentId: varchar('agentId', { length: 32 }),
+  e164: text('e164').notNull(),
+  createdAt: timestamp('createdAt', { mode: 'date' }).notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt', { mode: 'date' }).notNull().defaultNow(),
+  agentId: uuid('agentId').references(() => agent.id),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id),
 })
 
 export type PhoneNumber = InferSelectModel<typeof phoneNumber>

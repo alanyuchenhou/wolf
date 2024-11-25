@@ -107,6 +107,10 @@ export async function POST(request: Request) {
         - if the user wants you to display or list agents, call the displayAgents tool.
         - after the user creates an agents, call the displayAgents tool.
         - after the user deletes an agent, call the displayAgents tool.
+        - after the user updates an agent, call the openAgentViewer tool.
+        - after the user creates a phone number, call the displayPhoneNumbers tool.
+        - after the user assigns a phone number to an agent, call the displayPhoneNumbers tool.
+        - after the user deletes a phone number, call the displayPhoneNumbers tool.
         '
       `,
     messages: coreMessages,
@@ -369,7 +373,7 @@ export async function POST(request: Request) {
           e164: z.string().describe('the phone number in E.164 format'),
         }),
         execute: async ({ e164 }) => {
-          await createPhoneNumber(e164)
+          await createPhoneNumber({ e164, userId: session.user?.id ?? '' })
           return { phoneNumber: e164 }
         },
       },
@@ -382,7 +386,9 @@ export async function POST(request: Request) {
             .describe('the number of the agents to display'),
         }),
         execute: async () => {
-          const phoneNumbers = await listPhoneNumbers()
+          const phoneNumbers = await listPhoneNumbers({
+            userId: session.user?.id ?? '',
+          })
           return { phoneNumbers }
         },
       },
@@ -392,8 +398,8 @@ export async function POST(request: Request) {
           id: z.string().describe('the ID of the phone number'),
         }),
         execute: async ({ id }) => {
-          const phoneNumber = await getPhoneNumber(id)
-          return { phoneNumber }
+          const phoneNumber = await getPhoneNumber({ id })
+          return phoneNumber
         },
       },
       assignPhoneNumber: {
@@ -413,7 +419,7 @@ export async function POST(request: Request) {
           id: z.string().describe('the ID of the phone number'),
         }),
         execute: async ({ id }) => {
-          await deletePhoneNumber(id)
+          await deletePhoneNumber({ id })
           return { id }
         },
       },
