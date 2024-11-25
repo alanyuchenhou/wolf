@@ -21,6 +21,7 @@ import { VerifyPayment } from '../flights/verify-payment'
 import { PhoneCallConfirmation } from '../phone-calls/confirmation'
 import { PhoneCallDetails } from '../phone-calls/details'
 import { PhoneCallList } from '../phone-calls/list'
+import { PhoneNumberDetails } from '../phone-numbers/details'
 import { PhoneNumberList } from '../phone-numbers/list'
 
 export const Message = ({
@@ -95,6 +96,8 @@ export const Message = ({
                       <AgentViewer chatId={chatId} result={result} />
                     ) : toolName === 'displayPhoneNumbers' ? (
                       <PhoneNumberList chatId={chatId} result={result} />
+                    ) : toolName === 'displayPhoneNumberDetails' ? (
+                      <PhoneNumberDetails chatId={chatId} result={result} />
                     ) : (
                       <div>{JSON.stringify(result, null, 2)}</div>
                     )}

@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useChat } from 'ai/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { Suggestions } from '@/components/custom/suggestions'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -22,8 +23,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-
-import { Suggestions } from '../custom/suggestions'
 
 export function AgentEditor({
   chatId,

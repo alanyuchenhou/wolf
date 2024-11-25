@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { useChat } from 'ai/react'
 
+import { Suggestions } from '@/components/custom/suggestions'
 import { DataTable } from '@/components/ui/data-table'
 import { PhoneNumber } from '@/db/schema'
 
@@ -23,12 +24,16 @@ export function PhoneNumberList({
     maxSteps: 5,
   })
   return (
-    <div className='container mx-auto py-10'>
+    <div className='grid gap-4'>
       <DataTable
         clickMessage='Display the details of phone number'
         append={append}
         columns={columns}
         data={result.phoneNumbers}
+      />
+      <Suggestions
+        suggestions={['Create a phone number', 'Make a phone call']}
+        append={append}
       />
     </div>
   )
