@@ -122,8 +122,13 @@ export async function createPhoneNumber({
 export async function listPhoneNumbers({ userId }: { userId: string }) {
   try {
     return await db
-      .select()
+      .select({
+        id: phoneNumber.id,
+        e164: phoneNumber.e164,
+        agentName: agent.name,
+      })
       .from(phoneNumber)
+      .leftJoin(agent, eq(phoneNumber.agentId, agent.id))
       .where(eq(phoneNumber.userId, userId))
   } catch (error) {
     console.error('Failed to get phone number', error)
@@ -134,8 +139,15 @@ export async function listPhoneNumbers({ userId }: { userId: string }) {
 export async function getPhoneNumber({ id }: { id: string }) {
   try {
     const [selectedPhoneNumber] = await db
-      .select()
+      .select({
+        id: phoneNumber.id,
+        e164: phoneNumber.e164,
+        agentName: agent.name,
+        createdAt: phoneNumber.createdAt,
+        updatedAt: phoneNumber.updatedAt,
+      })
       .from(phoneNumber)
+      .leftJoin(agent, eq(phoneNumber.agentId, agent.id))
       .where(eq(phoneNumber.id, id))
     return selectedPhoneNumber
   } catch (error) {
