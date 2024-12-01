@@ -3,12 +3,17 @@ import { useChat } from 'ai/react'
 
 import { Suggestions } from '@/components/custom/suggestions'
 import { DataTable } from '@/components/ui/data-table'
-import { PhoneNumber } from '@/db/schema'
+
+interface PhoneNumber {
+  id: string
+  e164: string
+  agentName: string
+}
 
 export const columns: ColumnDef<PhoneNumber>[] = [
   { accessorKey: 'id', header: 'ID' },
   { accessorKey: 'e164', header: 'Number' },
-  { accessorKey: 'agentId', header: 'Agent ID' },
+  { accessorKey: 'agentName', header: 'Agent' },
 ]
 
 export function PhoneNumberList({

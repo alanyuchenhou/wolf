@@ -9,7 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { PhoneNumber } from '@/db/schema'
+
+interface PhoneNumber {
+  id: string
+  e164: string
+  agentName: string
+  createdAt: Date
+  updatedAt: Date
+}
 
 export function PhoneNumberDetails({
   chatId,
@@ -33,10 +40,10 @@ export function PhoneNumberDetails({
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-2'>
-        <p>e164: {result.e164}</p>
+        <p>Number: {result.e164}</p>
+        <p>Agent: {result.agentName}</p>
         <p>Created: {result.createdAt.toString()}</p>
         <p>Updated: {result.updatedAt.toString()}</p>
-        <p>Agent ID: {result.agentId}</p>
       </CardContent>
       <CardFooter className='flex justify-between'>
         <Button
