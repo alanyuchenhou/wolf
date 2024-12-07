@@ -57,6 +57,16 @@ export function PhoneNumberDetails({
           Assign
         </Button>
         <Button
+          onClick={() => {
+            append({
+              role: 'user',
+              content: `Display call history for phone number ${result.e164}.`,
+            })
+          }}
+        >
+          Display call history
+        </Button>
+        <Button
           variant='destructive'
           onClick={() => {
             append({

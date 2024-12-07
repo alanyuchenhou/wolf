@@ -64,10 +64,17 @@ function formatPhoneCall(call: any) {
   }
 }
 
-async function listPhoneCalls(limit: number) {
+async function listPhoneCalls({
+  e164,
+  limit = 10,
+}: {
+  e164: string
+  limit?: number
+}) {
   const twilio = twilioClient()
-  const calls = await twilio.calls.list({ limit })
-  const phoneCalls = calls.map(formatPhoneCall)
+  const inboundCalls = await twilio.calls.list({ limit, to: e164 })
+  const outboundCalls = await twilio.calls.list({ limit, from: e164 })
+  const phoneCalls = [...inboundCalls, ...outboundCalls].map(formatPhoneCall)
   return { phoneCalls }
 }
 
@@ -291,7 +298,7 @@ export async function POST(request: Request) {
             .optional()
             .describe('the number of the agents to display'),
         }),
-        execute: async ({ limit }) => {
+        execute: async () => {
           if (session && session.user && session.user.id) {
             const agents = await listAgents({ userId: session.user.id })
             return { agents }
@@ -346,14 +353,10 @@ export async function POST(request: Request) {
         description:
           'Display the list of most recent phone calls up to the given amount limit',
         parameters: z.object({
-          limit: z
-            .number()
-            .describe(
-              'the maximum limit of the number of phone calls to display',
-            ),
+          e164: z.string().describe('the phone number in E.164 format'),
         }),
-        execute: async ({ limit }) => {
-          const phoneCalls = await listPhoneCalls(limit)
+        execute: async ({ e164 }) => {
+          const phoneCalls = await listPhoneCalls({ e164 })
           return phoneCalls
         },
       },
