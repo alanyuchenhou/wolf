@@ -18,7 +18,6 @@ import { FlightStatus } from '../flights/flight-status'
 import { ListFlights } from '../flights/list-flights'
 import { SelectSeats } from '../flights/select-seats'
 import { VerifyPayment } from '../flights/verify-payment'
-import { PhoneCallConfirmation } from '../phone-calls/confirmation'
 import { PhoneCallDetails } from '../phone-calls/details'
 import { PhoneCallList } from '../phone-calls/list'
 import { PhoneNumberDetails } from '../phone-numbers/details'
@@ -86,8 +85,6 @@ export const Message = ({
                       <PhoneCallList chatId={chatId} result={result} />
                     ) : toolName === 'displayCallDetails' ? (
                       <PhoneCallDetails result={result} />
-                    ) : toolName === 'makePhoneCall' ? (
-                      <PhoneCallConfirmation phoneCall={result} />
                     ) : toolName === 'openAgentEditor' ? (
                       <AgentEditor chatId={chatId} result={result} />
                     ) : toolName === 'displayAgents' ? (

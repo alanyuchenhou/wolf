@@ -74,7 +74,9 @@ async function listPhoneCalls({
   const twilio = twilioClient()
   const inboundCalls = await twilio.calls.list({ limit, to: e164 })
   const outboundCalls = await twilio.calls.list({ limit, from: e164 })
-  const phoneCalls = [...inboundCalls, ...outboundCalls].map(formatPhoneCall)
+  const phoneCalls = [...inboundCalls, ...outboundCalls]
+    .sort((a: any, b: any) => b.startTime - a.startTime)
+    .map(formatPhoneCall)
   return { phoneCalls }
 }
 
@@ -286,8 +288,8 @@ export async function POST(request: Request) {
           phoneNumber: z.string().describe('the phone number in E.164 format'),
         }),
         execute: async ({ phoneNumber }) => {
-          const phoneCall = await createPhoneCall(phoneNumber)
-          return phoneCall
+          const { sid } = await createPhoneCall(phoneNumber)
+          return { sid }
         },
       },
       displayAgents: {
